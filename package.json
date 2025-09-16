@@ -7,9 +7,7 @@
   "lint": "eslint src/**/*.js",
   "start": "node src/index.js",
   "dev": "nodemon src/index.js"
-}
-
-  },
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Roksolana-Bilous/nodejs-hw-mongodb.git"
