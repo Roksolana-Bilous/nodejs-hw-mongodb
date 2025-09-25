@@ -4,12 +4,12 @@ import { createContact } from "../services/contacts.js";
 
 export const getContactsController = async (req, res, next) => {
     try {
-        const contacts = await getAllContacts();
+        const contact = await getAllContacts();
 
         res.json({
             status: 200,
             message: "Successfully found contacts!",
-            data: contacts,
+            data: contact,
         });
     }
     catch (err) {
@@ -18,17 +18,17 @@ export const getContactsController = async (req, res, next) => {
 };
 
 export const getContactByIdController = async (req, res, next) => {
-    const { contactsId } = req.params;
-    const contacts = await getContactsById(contactsId);
+    const { contactId } = req.params;
+    const contact = await getContactsById(contactId);
 
-    if (!contacts) {
+    if (!contact) {
         throw createHttpError(404, `Contact with id not found`);
     }
 
     res.json({
         status: 200,
-        message: `Successfully found contact with id ${contactsId}!`,
-        data: contacts,
+        message: `Successfully found contact with id ${contactId}!`,
+        data: contact,
     });
 };
 
@@ -52,7 +52,7 @@ export const patchContactController = async (req, res, next) => {
     res.json({
         status: 200,
         message: "Successfully patched a contact!",
-        data: {},
+        data: result,
     });
 };
 
