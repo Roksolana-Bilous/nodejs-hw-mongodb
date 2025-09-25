@@ -1,17 +1,17 @@
 import { Contacts } from '../db/models/contacts.js';
 
 export const getAllContacts = async () => {
-  const contacts = await Contacts.find();
-  return contacts;
+  const contact = await Contacts.find();
+  return contact;
 };
 
-export const getContactsById = async (contactsId) => {
-  const contacts = await Contacts.findById(contactsId);
-  return contacts;
+export const getContactsById = async (contactId) => {
+  const contact = await Contacts.findById(contactId);
+  return contact;
 };
 
-export const createContact = async (playload) => {
-  const contact = await Contacts.create(playload);
+export const createContact = async (payload) => {
+  const contact = await Contacts.create(payload);
   return contact;
 };
 
