@@ -2,12 +2,13 @@
   "name": "nodejs-hw-mongodb",
   "version": "1.0.0",
   "description": "",
- "main": "src/index.js",
-"scripts": {
-  "lint": "eslint src/**/*.js",
-  "start": "node src/index.js",
-  "dev": "nodemon src/index.js"
-},
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Roksolana-Bilous/nodejs-hw-mongodb.git"
@@ -30,6 +31,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "http-errors": "^2.0.0",
     "mongoose": "^8.18.1",
     "pino-http": "^10.5.0"
   }
