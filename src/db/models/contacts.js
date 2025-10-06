@@ -18,12 +18,20 @@ const contactsSchema = new Schema(
       default: false,
     },
     contactType: {
-        type: String,
-        enum: ['work', 'home', 'personal'],
+      type: String,
+      enum: ['work', 'home', 'personal'],
       required: true,
       default: 'personal',
     },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        required: true,
     },
-    { timestamps: true }
+  },
+    {
+    timestamps: true,
+    versionKey: false,
+  },
 );
 export const Contacts = model('Contacts', contactsSchema);
