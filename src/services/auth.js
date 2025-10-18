@@ -4,6 +4,10 @@ import createHttpError from "http-errors";
 import { UsersCollection } from "../db/models/user.js";
 import { FIFTEEN_MINUTES, THIRTY_DAYS } from "../constants/index.js";
 import { SessionCollection } from "../db/models/session.js";
+import jwt from "jsonwebtoken";
+import { SMTP } from "../constants/index.js";
+import { getEnvVar } from "../utils/getEnvVar.js";
+import { sendEmail } from "../utils/sendMail.js";
 
 export const registerUser = async (payload) => {
     const user = await UsersCollection.findOne({ email: payload.email });
@@ -93,4 +97,75 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 
 export const logoutUser = async (sessionId) => {
     await SessionCollection.deleteOne({ _id: sessionId });
+};
+
+
+export async function sendResetPassword(email) {
+  const user = await UsersCollection.findOne({ email });
+  if (!user) {
+    throw (createHttpError(404, "User not found"));
+  }
+
+  const resetToken = jwt.sign(
+    {
+      sub: user._id.toString(),
+      email,
+    },
+    getEnvVar("JWT_SECRET"),
+    { expiresIn: "5m" }
+  );
+
+  const frontendDomain = getEnvVar("APP_DOMAIN");
+  const resetLink = `${frontendDomain}/reset-password?token=${resetToken}`;
+  try {
+    await sendEmail({
+      from: getEnvVar(SMTP.SMTP_FROM),
+      to: email,
+      subject: "Reset password request",
+      html: `<h2>Password Reset Request</h2>
+      <p>Click the link below to reset your password:</p>
+      <a href="${resetLink}" target="_blank">${resetLink}</a>
+      <p>This link will expire in 5 minutes.</p>`,
+    });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw createHttpError(500, "Failed to send the email, please try again later");
+  };
+  return {
+    status: 200,
+    message: "Reset password email sent successfully",
+    data: {},
+  };
+  };
+
+  export const resetPassword = async (payload) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(payload.token, getEnvVar('JWT_SECRET'));
+  } catch (err) {
+    if (err instanceof Error) throw createHttpError(401, err.message);
+    throw err;
+  }
+
+  const user = await UsersCollection.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+  await UsersCollection.updateOne(
+    { _id: user._id },
+    { password: encryptedPassword },
+  );
+    return {
+      status: 200,
+      message: "Password has been reset successfully",
+      data: {},
+    };
 };

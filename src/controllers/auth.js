@@ -2,6 +2,8 @@ import { registerUser, loginUser } from "../services/auth.js";
 import { THIRTY_DAYS } from "../constants/index.js";
 import { logoutUser } from "../services/auth.js";
 import { refreshUsersSession } from "../services/auth.js";
+import { sendResetPassword } from "../services/auth.js";
+import { resetPassword } from "../services/auth.js";
 
 const setupSession = (res, session) => {
     res.cookie("refreshToken", session.refreshToken, {
@@ -69,4 +71,22 @@ export const refreshUserSessionController = async (req, res) => {
       accessToken: session.accessToken,
     },
   });
+};
+
+export const sendResetPasswordController = async (req, res) => {
+  const { email } = req.body;
+  const result = await sendResetPassword(email);
+    res.json({
+        status: 200,
+      message: result.message,
+    });
+};
+
+export const resetPasswordController = async (req, res, next) => {
+  try {
+    const result = await resetPassword(req.body);
+    res.status(result.status).json(result);
+  } catch (error) {
+    next(error);
+  }
 };
