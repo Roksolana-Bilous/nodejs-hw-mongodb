@@ -87,7 +87,9 @@ const result = await updateContact(
     {
         ...req.body,
         photo: photoUrl,
-    });
+    },
+    req.user._id
+);
 
     if (!result) {
         next(createHttpError(404, `Contact not found`));
@@ -96,7 +98,7 @@ const result = await updateContact(
     res.json({
         status: 200,
         message: "Successfully patched a contact!",
-        data: result.contact,
+        data: result,
     });
 };
 
